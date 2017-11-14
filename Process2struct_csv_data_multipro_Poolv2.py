@@ -8,7 +8,7 @@ FROM 1967 to 2017, total size zipped is 666-699 MB
 Unzipped it is 1.42 GB
 """
 
-import pandas as pd
+#import pandas as pd
 import nltk
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem.snowball import SnowballStemmer
@@ -143,25 +143,6 @@ def readExtract(file_list):
         
     return Tag_listOflist
 
-
-
-
-# Extract useful information in this order:
-# Title of research,                       AwardTitle
-# Start Date,                          AwardEffectiveDate
-# Stop Date,                         AwardExpirationDate
-# Amount in USD,                           AwardAmount
-# NSF Directorate, NSF Division  Organization.Directorate.LongName and\
-#  Organization.Division.LongName
-# name of NSF officer who approved award   ProgramOfficer.SignBlockName
-# Award ID,                                AwardID
-# Firstname and lastname of PI             Investigator.FirstName and Investigator.LastName
-# Name and State of Institution awarded    Institution.Name and Institution.StateCode
-# info on NSF Program                     ProgramElement.Code and ProgramElement.Text
-# top 3 words 
-#Year 2017, File #  8679,Total File 438352
-#--- 1312.2511858940125 seconds ---, that's 21min
-
 # Create tokenizer to use in loop
 tokenizer = RegexpTokenizer('\w+')
 # use stemmer for abstract
@@ -185,7 +166,7 @@ if __name__ == "__main__":
     CSV_Abstract_file = 'Abstract.csv'
     if os.path.isfile(CSV_Abstract_file): os.remove(CSV_Abstract_file)
     # create an empty dataframe
-    df = pd.DataFrame(columns=ListOfInfo)
+#    df = pd.DataFrame(columns=ListOfInfo)
     # number of processes (quad cores have 8 CPU, 1 CPU = 1 process at most)
     NUM_PROCESS = 8
     # cumulative number of files read
@@ -222,7 +203,7 @@ if __name__ == "__main__":
         # add tag list to dataframe
         Unnested_listoflist = [ h[:-1] for l in pool_outputs for h in l ]
         
-#        df = pd.DataFrame(Unnested_listoflist, columns=ListOfInfo)
+		  # write select list to file 
         with open(CSV_DB_file, "a", newline='',  encoding='utf-8') as f:
             writer = csv.writer(f)
             if ny == 0: writer.writerow(ListOfInfo)
@@ -244,9 +225,20 @@ if __name__ == "__main__":
         print('\rYear {}, File #{:6d},Total File {:6d}'.format\
               (y,ind,cumind) ,end='', flush=True)
         
-        
-        
-        
+    # close pool
+    pool.close()
+    # make sure all processes are fisnished, map() does it too!
+    pool.join()
+    # closing print statement
+    print('\rYear {}, File #{:6d},Total File {:6d}'.format(y,ind,cumind),\
+                                                          end='\n', flush=True)
+    print("--- %s seconds ---" % (time.time() - start_time))
+    # First 1000 files in 2016 and 2017: ~ 6.3s, more than 2x than no pool
+
+
+
+
+
 #        # make a list of list of list <=> list of listIn_ck
 #        Nckmap = 5
 ##        listIn_ckmap = [ listIn_ck[i:i+Nckmap] for i in range(0,len(listIn_ck), Nckmap) ]
@@ -296,15 +288,25 @@ if __name__ == "__main__":
 #        # clear dataframe
 #        df = pd.DataFrame(columns=ListOfInfo)
 #        #could empty dataframe instead: df.iloc[0:0]
-    # close pool
-    pool.close()
-    # make sure all processes are fisnished, map() does it too!
-    pool.join()
-    # closing print statement
-    print('\rYear {}, File #{:6d},Total File {:6d}'.format(y,ind,cumind),\
-                                                          end='\n', flush=True)
-    print("--- %s seconds ---" % (time.time() - start_time))
-    # First 1000 files in 2016 and 2017: ~ 6.3s, more than 2x than no pool
+
+
+
+# Extract useful information in this order:
+# Title of research,                       AwardTitle
+# Start Date,                          AwardEffectiveDate
+# Stop Date,                         AwardExpirationDate
+# Amount in USD,                           AwardAmount
+# NSF Directorate, NSF Division  Organization.Directorate.LongName and\
+#  Organization.Division.LongName
+# name of NSF officer who approved award   ProgramOfficer.SignBlockName
+# Award ID,                                AwardID
+# Firstname and lastname of PI             Investigator.FirstName and Investigator.LastName
+# Name and State of Institution awarded    Institution.Name and Institution.StateCode
+# info on NSF Program                     ProgramElement.Code and ProgramElement.Text
+# top 3 words 
+#Year 2017, File #  8679,Total File 438352
+#--- 1312.2511858940125 seconds ---, that's 21min
+
 
 
     
