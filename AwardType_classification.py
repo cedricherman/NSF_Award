@@ -39,7 +39,7 @@ import pandas as pd
 df = pd.merge(df_corpus, df_Award_Instr_target, how='inner', on=['AwardID'])
 #######-----------------------------------------------------------------#######
 # temporary downsizez of data
-df = df.iloc[:10]
+#df = df.iloc[:10]
 
 # LABEL
 #######-----------------------------------------------------------------#######
@@ -56,37 +56,104 @@ Award_Instr_coded = Award_Instr_encoder.fit_transform(target)
 from sklearn.model_selection import train_test_split
 # split data/target in train and test sets
 corpus_train, corpus_test, target_train, target_test = train_test_split(
-													df.Raw_Abstract, Award_Instr_coded,\
-													 test_size=0.3, random_state=42)
+                                                    df.Raw_Abstract, Award_Instr_coded,\
+                                                     test_size=0.3, random_state=42)
 # retrieve target names
 target_train_names =  Award_Instr_encoder.inverse_transform(target_train)
 target_test_names =  Award_Instr_encoder.inverse_transform(target_test)
 target_names_list = Award_Instr_encoder.classes_
 
-###############################################################################
-# Define pipeline
-# CountVectorizer--->tf-idf--->Support Vector Machine Classifier
-from sklearn.pipeline import Pipeline
-from sklearn.linear_model import SGDClassifier
-from sklearn.feature_extraction.text import TfidfTransformer
-from sklearn import metrics
+################################################################################
+## Define pipeline
+## CountVectorizer--->tf-idf--->Naive Bayes
 import numpy as np
+from sklearn.pipeline import Pipeline
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.naive_bayes import MultinomialNB
+from time import time
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-text_clf = Pipeline([('CustomVect', utilsvectorizer.CustomVectorizer( min_df = 1,
-							  max_df = 1.0,\
-							  analyzer = 'word',\
-							  stop_words = sw,\
-							  strip_accents = 'unicode',\
-							  token_pattern = r'(?u)\b[a-zA-Z][a-zA-Z]+\b',\
+text_clf = Pipeline([('CustomVect', utilsvectorizer.CustomVectorizer(\
+                              ngram_range=(3, 4),\
+                              min_df = 1,\
+                              max_df = 1.0,\
+                              analyzer = 'word',\
+                              stop_words = sw,\
+                              strip_accents = 'unicode',\
+                              token_pattern = r'(?u)\b[a-zA-Z][a-zA-Z]+\b',\
                         preprocessor = utilsvectorizer.remove_Tag_Http )),
-                      ('tfidf', TfidfTransformer()),
-                      ('clf', SGDClassifier(loss='hinge', penalty='l2',
-                                            alpha=1e-3, random_state=42,
-                                            max_iter=5, tol=None)),
-							])
+                      ('tfidf', TfidfTransformer(use_idf=True)),
+                      ('clf', MultinomialNB(alpha=1e-2)),
+                         ])
+t0 = time()
+# train, get model named text_clf
+text_clf.fit(corpus_train, target_train) 
+print("done in %0.3fs" % (time() - t0))
+# test
+predicted = text_clf.predict(corpus_test)
+print( 'Accuracy = {:.4f}'.format( np.mean(predicted == target_test) ) )
+# 69 %
+# more metrics
+from sklearn import metrics
+# precision, recall, f1 score
+print(metrics.classification_report(target_test,\
+                                     predicted,\
+                                     target_names = target_names_list))
+# confusion matrix
+mat = metrics.confusion_matrix(target_test, predicted)
+print(mat)
+sns.heatmap(mat.T, square=True, annot=True, fmt='d', cbar=False,
+            xticklabels=target_names_list,
+            yticklabels=target_names_list)
+plt.xlabel('true label')
+plt.ylabel('predicted label');
 
+## save model
+#from sklearn.externals import joblib
+#joblib.dump(text_clf, 'NB_default_Model.pkl')
+##text_clf = joblib.load('NB_default_Model.pkl') 
+
+# ngram_range=(1, 2) ---> 77%
+
+# ngram_range=(2, 3) ---> 78%
+#Accuracy = 0.78
+#                       precision    recall  f1-score   support
+#
+#     Continuing grant       0.71      0.59      0.64     31671
+#Cooperative Agreement       0.72      0.27      0.40      1058
+#           Fellowship       0.95      0.61      0.74      1850
+#       Standard Grant       0.80      0.88      0.84     63765
+#
+#          avg / total       0.77      0.78      0.77     98344
+
+
+###############################################################################
+# Define pipeline
+# CountVectorizer--->tf-idf--->Support Vector Machine Classifier
+#from sklearn.pipeline import Pipeline
+#from sklearn.linear_model import SGDClassifier
+#from sklearn.feature_extraction.text import TfidfTransformer
+#from sklearn import metrics
+#import numpy as np
+#import matplotlib.pyplot as plt
+#import seaborn as sns
+#
+#text_clf = Pipeline([('CustomVect', utilsvectorizer.CustomVectorizer(\
+#							  ngram_range=(1, 2),\
+#							  min_df = 1,\
+#							  max_df = 1.0,\
+#							  analyzer = 'word',\
+#							  stop_words = sw,\
+#							  strip_accents = 'unicode',\
+#							  token_pattern = r'(?u)\b[a-zA-Z][a-zA-Z]+\b',\
+#                        preprocessor = utilsvectorizer.remove_Tag_Http )),
+#                      ('tfidf', TfidfTransformer()),
+#                      ('clf', SGDClassifier(loss='hinge', penalty='l2',
+#                                            alpha=1e-3, random_state=42,
+#                                            max_iter=5, tol=None)),
+#							])
+#
 ## train, get model named text_clf
 #text_clf.fit(corpus_train, target_train) 
 ## test
@@ -98,7 +165,7 @@ text_clf = Pipeline([('CustomVect', utilsvectorizer.CustomVectorizer( min_df = 1
 #print(metrics.classification_report(target_test,\
 #									 predicted,\
 #									 target_names = target_names_list))
-# confusion matrix
+## confusion matrix
 #mat = metrics.confusion_matrix(target_test, predicted)
 #print(mat)
 #sns.heatmap(mat.T, square=True, annot=True, fmt='d', cbar=False,
@@ -114,82 +181,33 @@ text_clf = Pipeline([('CustomVect', utilsvectorizer.CustomVectorizer( min_df = 1
 ##text_clf = joblib.load('SVM_default_Model.pkl') 
 
 ###############################################################################
-# Grid search
-from sklearn.model_selection import GridSearchCV
-
-# ngram: used unigram (bag of word) or bigrams
-# use_idf: Enable inverse-document-frequency reweighting.
-# SGD alpha is the regularization constant
-# pick 3 param out of 2 choices each: 2^3 = 8 possibilities
-parameters = {'vect__ngram_range': [(1, 1), (1, 2)],
-               'tfidf__use_idf': (True, False),
-               'clf__alpha': (1e-2, 1e-3),
-}
-
-gs_clf = GridSearchCV(text_clf, parameters, n_jobs=-1)
-gs_clf = gs_clf.fit(corpus_train, target_train)
-
-print(gs_clf.best_score_)
-for param_name in sorted(parameters.keys()):
-     print("%s: %r" % (param_name, gs_clf.best_params_[param_name]))
-# import to pandas to see it
-gs_clf.cv_results_
-
-# save model
-from sklearn.externals import joblib
-joblib.dump(text_clf, 'SVM_default_Model.pkl')
-#text_clf = joblib.load('SVM_default_Model.pkl') 
-
-
-
-
-
-################################################################################
-## Define pipeline
-## CountVectorizer--->tf-idf--->Naive Bayes
-#import numpy as np
-#from sklearn.pipeline import Pipeline
-#from sklearn.feature_extraction.text import TfidfTransformer
-#from sklearn.naive_bayes import MultinomialNB
-#import matplotlib.pyplot as plt
-#import seaborn as sns
+## Grid search
+#from sklearn.model_selection import GridSearchCV
 #
-#text_clf = Pipeline([('CustomVect', CustomVectorizer( min_df = 1,
-#							  max_df = 1.0,\
-#							  analyzer = 'word',\
-#							  stop_words = sw,\
-#							  strip_accents = 'unicode',\
-#							  token_pattern = r'(?u)\b[a-zA-Z][a-zA-Z]+\b',\
-#                        preprocessor = remove_Tag_Http )),
-#                      ('tfidf', TfidfTransformer()),
-#                      ('clf', MultinomialNB()),
-#					     ])
-#	
-## train, get model named text_clf
-#text_clf.fit(corpus_train, target_train) 
-## test
-#predicted = text_clf.predict(corpus_test)
-#print( 'Accuracy = {:.2f}'.format( np.mean(predicted == target_test) ) )
-## 69 %
-## more metrics
-#from sklearn import metrics
-## precision, recall, f1 score
-#print(metrics.classification_report(target_test,\
-#									 predicted,\
-#									 target_names = target_names))
-## confusion matrix
-#mat = metrics.confusion_matrix(target_test, predicted)
-#print(mat)
-#sns.heatmap(mat.T, square=True, annot=True, fmt='d', cbar=False,
-#            xticklabels=target_names,
-#            yticklabels=target_names)
-#plt.xlabel('true label')
-#plt.ylabel('predicted label');
+## ngram: used unigram (bag of word) or bigrams
+## use_idf: Enable inverse-document-frequency reweighting.
+## SGD alpha is the regularization constant
+## pick 3 param out of 2 choices each: 2^3 = 8 possibilities
+#parameters = {'vect__ngram_range': [(1, 1), (1, 2)],
+#               'tfidf__use_idf': (True, False),
+#               'clf__alpha': (1e-2, 1e-3),
+#}
+#
+#gs_clf = GridSearchCV(text_clf, parameters, n_jobs=-1)
+#gs_clf = gs_clf.fit(corpus_train, target_train)
+#
+#print(gs_clf.best_score_)
+#for param_name in sorted(parameters.keys()):
+#     print("%s: %r" % (param_name, gs_clf.best_params_[param_name]))
+## import to pandas to see it
+#gs_clf.cv_results_
 #
 ## save model
 #from sklearn.externals import joblib
-#joblib.dump(text_clf, 'NB_default_Model.pkl')
-##text_clf = joblib.load('NB_default_Model.pkl') 
+#joblib.dump(text_clf, 'SVM_default_Model.pkl')
+##text_clf = joblib.load('SVM_default_Model.pkl') 
+
+
 
 
 #sw = stop_words.ENGLISH_STOP_WORDS.union(firstname_corp)
