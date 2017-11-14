@@ -3,6 +3,10 @@
 Created on Tue Nov  7 21:49:38 2017
 
 @author: herma
+
+This is a script to download zipfiles from each year on the NSF website.
+After dowload of a file is completed, extract it so that it will create
+a folder named after its year. Each year folder has a one xml file per award
 """
 
 # imports necessary for zip file download
@@ -11,10 +15,12 @@ from zipfile import ZipFile
 import re
 
 
+start_year = 1960
+stop_year = 2017
 # total size of data (over all zipped files)
 Tot_size=0
 # year range for url
-years = range(2003,2017+1)
+years = range(start_year,stop_year+1)
 for ny,y in enumerate(years):
     url = 'https://www.nsf.gov/awardsearch/download?DownloadFileName={}&All=true'.format(y)
     request = requests.get(url)
