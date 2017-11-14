@@ -16,7 +16,8 @@ The National Science Foundation is a federal agency that supports the most promi
 
 3. Cleaning and wrangling
   Python modules :
-          - 
-          - 
-          - 
+          - pandas
+          - sklearn
+          - re
+          - itertools
           
