@@ -20,4 +20,11 @@ The National Science Foundation is a federal agency that supports the most promi
           - sklearn
           - re
           - itertools
+
+4. Award Type Classification
+          - utilsvectorizer (custom module for vectorization, Bag of words, N-grams)
+          - Abstract_transformation (custom  module to clean Abstract data)
+          - AwardInstr_transformation (custom  module to clean Award type data)
+          - sklearn
+          - nltk
           
