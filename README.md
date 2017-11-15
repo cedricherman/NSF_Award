@@ -25,6 +25,12 @@ The National Science Foundation is a federal agency that supports the most promi
           - utilsvectorizer (custom module for vectorization, Bag of words, N-grams)
           - Abstract_transformation (custom  module to clean Abstract data)
           - AwardInstr_transformation (custom  module to clean Award type data)
-          - sklearn
+          - sklearn (Multinomial Naive Bayes)
           - nltk
-          
+
+5. Abstract clustering
+          - utilsvectorizer (custom module for vectorization, Bag of words, N-grams)
+          - Abstract_transformation (custom  module to clean Abstract data)
+          - Directorate_transformation (custom  module to clean Directorate data)
+          - sklearn (K-means)
+          - nltk
