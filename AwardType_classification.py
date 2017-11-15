@@ -103,11 +103,15 @@ print(metrics.classification_report(target_test,\
 # confusion matrix
 mat = metrics.confusion_matrix(target_test, predicted)
 print(mat)
-sns.heatmap(mat.T, square=True, annot=True, fmt='d', cbar=False,
-            xticklabels=target_names_list,
-            yticklabels=target_names_list)
-plt.xlabel('true label')
-plt.ylabel('predicted label');
+target_names_list_mod = [ '\n'.join(tn.split()) \
+						 for tn in target_names_list]
+sns.heatmap(mat.T, square=True, annot=True, fmt='d', cbar=True,
+			vmin = 0,
+			vmax = np.amax(mat),
+            xticklabels=target_names_list_mod,
+            yticklabels=target_names_list_mod)
+plt.xlabel('true label', fontsize=14)
+plt.ylabel('predicted label', fontsize=14);
 
 ## save model
 #from sklearn.externals import joblib
@@ -126,6 +130,33 @@ plt.ylabel('predicted label');
 #       Standard Grant       0.80      0.88      0.84     63765
 #
 #          avg / total       0.77      0.78      0.77     98344
+
+###############################################################################
+## Grid search
+#from sklearn.model_selection import GridSearchCV
+#
+## ngram: used unigram (bag of word) or bigrams
+## use_idf: Enable inverse-document-frequency reweighting.
+## SGD alpha is the regularization constant
+## pick 3 param out of 2 choices each: 2^3 = 8 possibilities
+#parameters = {'vect__ngram_range': [(1, 1), (1, 2)],
+#               'tfidf__use_idf': (True, False),
+#               'clf__alpha': (1e-2, 1e-3),
+#}
+#
+#gs_clf = GridSearchCV(text_clf, parameters, n_jobs=-1)
+#gs_clf = gs_clf.fit(corpus_train, target_train)
+#
+#print(gs_clf.best_score_)
+#for param_name in sorted(parameters.keys()):
+#     print("%s: %r" % (param_name, gs_clf.best_params_[param_name]))
+## import to pandas to see it
+#gs_clf.cv_results_
+#
+## save model
+#from sklearn.externals import joblib
+#joblib.dump(text_clf, 'SVM_default_Model.pkl')
+##text_clf = joblib.load('SVM_default_Model.pkl') 
 
 
 ###############################################################################
@@ -179,34 +210,6 @@ plt.ylabel('predicted label');
 #from sklearn.externals import joblib
 #joblib.dump(text_clf, 'SVM_default_Model.pkl')
 ##text_clf = joblib.load('SVM_default_Model.pkl') 
-
-###############################################################################
-## Grid search
-#from sklearn.model_selection import GridSearchCV
-#
-## ngram: used unigram (bag of word) or bigrams
-## use_idf: Enable inverse-document-frequency reweighting.
-## SGD alpha is the regularization constant
-## pick 3 param out of 2 choices each: 2^3 = 8 possibilities
-#parameters = {'vect__ngram_range': [(1, 1), (1, 2)],
-#               'tfidf__use_idf': (True, False),
-#               'clf__alpha': (1e-2, 1e-3),
-#}
-#
-#gs_clf = GridSearchCV(text_clf, parameters, n_jobs=-1)
-#gs_clf = gs_clf.fit(corpus_train, target_train)
-#
-#print(gs_clf.best_score_)
-#for param_name in sorted(parameters.keys()):
-#     print("%s: %r" % (param_name, gs_clf.best_params_[param_name]))
-## import to pandas to see it
-#gs_clf.cv_results_
-#
-## save model
-#from sklearn.externals import joblib
-#joblib.dump(text_clf, 'SVM_default_Model.pkl')
-##text_clf = joblib.load('SVM_default_Model.pkl') 
-
 
 
 
