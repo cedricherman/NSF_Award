@@ -38,3 +38,6 @@ The National Science Foundation is a federal agency that supports the most promi
           - Directorate_transformation (custom  module to clean Directorate data)<br>
           - sklearn (K-means)<br>
           - nltk <br>
+          
+Installation instructions:<br>
+To be continued soon
