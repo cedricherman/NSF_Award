@@ -1,6 +1,6 @@
 # NSF_Awards
 Exploring National Science Foundation Awards and getting insights from historical data back to 1960.
-The NSF defines seven areas of science called directorate. This study aims to determine the optimal number of directorates. Does each diretorate operate independently or is there overlap between them?
+The NSF defines seven areas of science called directorate. This study aims to determine the optimal number of directorates. Does each diretorate operate independently or is there overlap between them? <br>
 On another hand, an attempt to predict award type was conducted. Classifying award type automatically allows for faster processing and reduces delay due to bureaucracy.
 
 The National Science Foundation is a federal agency that supports the most promising research ideas from all sciences and engineering fields except medical sciences. This is an end-to-end project were the following pipeline was designed:
