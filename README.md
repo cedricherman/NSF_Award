@@ -1,9 +1,11 @@
 # NSF_Awards
-Explore awards and get insights from historical data back to 1960
+Exploring National Science Foundation Awards and getting insights from historical data back to 1960.
+The NSF defines seven areas of science called directorate. This study aims to determine the optimal number of directorates. Does each diretorate operate independently or is there overlap between them?
+On another hand, an attempt to predict award type was conducted. Classifying award type automatically allows for faster processing and reduces delay due to bureaucracy.
 
-The National Science Foundation is a federal agency that supports the most promising research ideas from all sciences and engineering fields except medical sciences.
+The National Science Foundation is a federal agency that supports the most promising research ideas from all sciences and engineering fields except medical sciences. This is an end-to-end project were the following pipeline was designed:
 
-1. Download NSF Award
+1. Download NSF Award, historical data is available on the NSF website and open to the public. Each fiscal year has one zip file and each zip file contains all awards for that year in an xml format.
   Python modules :
           - requests
           - zipfile
@@ -14,21 +16,23 @@ The National Science Foundation is a federal agency that supports the most promi
           - nltk
           - multiprocessing
 
-3. Cleaning and wrangling
+3. Cleaning and wrangling. Text data has abbreviations and contents such as web link that are not desirable in this study.
   Python modules :
           - pandas
           - sklearn
           - re
           - itertools
 
-4. Award Type Classification
+4. Award Type Classification. Prediction of award type.
+  Python modules :
           - utilsvectorizer (custom module for vectorization, Bag of words, N-grams)
           - Abstract_transformation (custom  module to clean Abstract data)
           - AwardInstr_transformation (custom  module to clean Award type data)
           - sklearn (Multinomial Naive Bayes)
           - nltk
 
-5. Abstract clustering
+5. Abstract clustering. We will use abstracts to identify silos and areas of overlap between directorates.
+  Python modules :
           - utilsvectorizer (custom module for vectorization, Bag of words, N-grams)
           - Abstract_transformation (custom  module to clean Abstract data)
           - Directorate_transformation (custom  module to clean Directorate data)
