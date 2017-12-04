@@ -5,25 +5,25 @@ On another hand, an attempt to predict award type was conducted. Classifying awa
 
 The National Science Foundation is a federal agency that supports the most promising research ideas from all sciences and engineering fields except medical sciences. This is an end-to-end project were the following pipeline was designed:
 
-1. Download NSF Award, historical data is available on the NSF website and open to the public. Each fiscal year has one zip file and each zip file contains all awards for that year in an xml format.
+1. Download NSF Award, historical data is available on the NSF website and open to the public. Each fiscal year has one zip file and each zip file contains all awards for that year in an xml format.<br>
   Python modules :<br>
           - requests<br>
           - zipfile<br>
 
-2. Read each award xml file and create a structured data file
+2. Read each award xml file and create a structured data file<br>
   Python modules :<br>
           - BeautifulSoup<br>
           - nltk<br>
           - multiprocessing<br>
 
-3. Cleaning and wrangling. Text data has abbreviations and contents such as web link that are not desirable in this study.
+3. Cleaning and wrangling. Text data has abbreviations and contents such as web link that are not desirable in this study.<br>
   Python modules :<br>
           - pandas<br>
           - sklearn<br>
           - re<br>
           - itertools<br>
 
-4. Award Type Classification. Prediction of award type.
+4. Award Type Classification. Prediction of award type.<br>
   Python modules :<br>
           - utilsvectorizer (custom module for vectorization, Bag of words, N-grams)<br>
           - Abstract_transformation (custom  module to clean Abstract data)<br>
@@ -31,7 +31,7 @@ The National Science Foundation is a federal agency that supports the most promi
           - sklearn (Multinomial Naive Bayes)<br>
           - nltk<br>
 
-5. Abstract clustering. We will use abstracts to identify silos and areas of overlap between directorates.
+5. Abstract clustering. We will use abstracts to identify silos and areas of overlap between directorates.<br>
   Python modules :<br>
           - utilsvectorizer (custom module for vectorization, Bag of words, N-grams)<br>
           - Abstract_transformation (custom  module to clean Abstract data)<br>
