@@ -1,10 +1,12 @@
 # NSF_Awards
-**Take a look at Presentation [NSF Award Jupyter Notebook](https://github.com/cedricherman/NSF_Awards/blob/master/Presentation%20NSF%20Award.ipynb) for a quick overview**<br><br>
+**For a brief overview, please look at Presentation [NSF Award Jupyter Notebook](https://github.com/cedricherman/NSF_Awards/blob/master/Presentation%20NSF%20Award.ipynb)**<br><br>
 Exploring National Science Foundation Awards and getting insights from historical data back to 1960.<br><br>
 The NSF defines seven areas of science called directorate. This study aims to determine the optimal number of directorates. Does each diretorate operate independently or is there overlap between them? <br><br>
 On another hand, an attempt to predict award type was conducted. Classifying award type automatically allows for faster processing and reduces delay due to bureaucracy.
 
 The National Science Foundation is a federal agency that supports the most promising research ideas from all sciences and engineering fields except medical sciences. This is an end-to-end project were the following pipeline was designed:
+
+
 
 1. Download NSF Award, historical data is available on the NSF website and open to the public. Each fiscal year has one zip file and each zip file contains all awards for that year in an xml format.<br>
   Python modules :<br>
