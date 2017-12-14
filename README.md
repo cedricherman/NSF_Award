@@ -1,5 +1,5 @@
 # NSF_Awards
-**For a brief overview, please look at [Presentation NSF Award] Jupyter Notebook(https://github.com/cedricherman/NSF_Awards/blob/master/Presentation%20NSF%20Award.ipynb)**<br><br>
+**For a brief overview, please look at [Presentation NSF Award Jupyter Notebook](https://github.com/cedricherman/NSF_Awards/blob/master/Presentation%20NSF%20Award.ipynb)**<br><br>
 Exploring National Science Foundation Awards and getting insights from historical data back to 1960.<br><br>
 The NSF defines seven areas of science called directorate. This study aims to determine the optimal number of directorates. Does each diretorate operate independently or is there overlap between them? <br><br>
 On another hand, an attempt to predict award type was conducted. Classifying award type automatically allows for faster processing and reduces delay due to bureaucracy.
